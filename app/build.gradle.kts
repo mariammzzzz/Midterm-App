@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+
+    kotlin("plugin.serialization") version "2.4.0" // Add this line for Kotlin serialization
 }
 
 android {
@@ -55,4 +57,16 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+
+    // Retrofit for api calls
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0") //gson converter
+
+
+    // viewmodel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+
+    //our design system module
+    implementation(project(":DesignSystem"))
 }
