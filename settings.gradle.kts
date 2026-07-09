@@ -24,4 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Midterm App"
 include(":app")
- 
+include(":DesignSystem")
