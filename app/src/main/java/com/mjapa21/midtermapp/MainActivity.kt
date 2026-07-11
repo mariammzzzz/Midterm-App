@@ -4,17 +4,28 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mjapa21.designsystem.components.CategoryChip
-import com.mjapa21.designsystem.components.InfoBox
-import com.mjapa21.designsystem.components.SectionHeader
+import com.mjapa21.midtermapp.data.RetrofitInstance
+import com.mjapa21.midtermapp.data.model.CategoryListItem
 import com.mjapa21.theme.MidtermAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -24,10 +35,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MidtermAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    CategoriesTestScreen(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -35,36 +43,66 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Column(modifier = modifier.padding(16.dp)) {
-        SectionHeader(
-            title = "Sample Section",
-            iconRes = com.mjapa21.designsystem.R.drawable.ic_arrow_next,
-            onClick = { /* Handle click */ }
-        )
-        InfoBox(
-            imageUrl = "https://www.themealdb.com/images/media/meals/bza0g51782856541.jpg",
-            title = "Sample Title",
-            description = "This is a sample description for the InfoBox component.",
-        )
+fun CategoriesTestScreen(modifier: Modifier = Modifier) {
+    var categories by remember { mutableStateOf<List<CategoryListItem>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(true) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
-        CategoryChip(
-            category = "Sample Beef Category",
-            imageUrl = "https://www.themealdb.com/images/category/beef.png",
-            onClick = { /* Handle click */ }
-        )
-        CategoryChip(
-            category = "Sample Beef Category",
-            onClick = { /* Handle click */ }
-        )
+    LaunchedEffect(Unit) {
+        try {
+            val foodApi = RetrofitInstance.createFoodApi()
+            val response = foodApi.getFoodCategories()
+            categories = response.categories
+        } catch (e: Exception) {
+            errorMessage = e.message ?: "Unknown error"
+        } finally {
+            isLoading = false
+        }
     }
 
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            text = "Categories API test",
+            style = MaterialTheme.typography.titleLarge
+        )
+
+        when {
+            isLoading -> CircularProgressIndicator()
+
+            errorMessage != null -> Text(
+                text = "Error: $errorMessage",
+                color = MaterialTheme.colorScheme.error
+            )
+
+            categories.isEmpty() -> Text("No categories returned.")
+
+            else -> {
+                Text("Loaded ${categories.size} categories")
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(categories) { category ->
+                        CategoryChip(
+                            category = category.strCategory,
+                            imageUrl = category.strCategoryThumb,
+                            onClick = { /* navigate or select */ }
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+private fun CategoriesTestScreenPreview() {
     MidtermAppTheme {
-        Greeting("Android")
+        CategoriesTestScreen()
     }
 }

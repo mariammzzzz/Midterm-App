@@ -1,0 +1,17 @@
+package com.mjapa21.midtermapp.data
+
+import com.mjapa21.midtermapp.data.model.CategoriesList
+import com.mjapa21.midtermapp.data.model.MealsList
+import retrofit2.http.GET
+import retrofit2.http.Query
+
+interface FoodApi {
+    @GET("categories.php")
+    suspend fun getFoodCategories(): CategoriesList
+
+
+    @GET("filter.php")
+    suspend fun getFoodByCategory(
+        @Query("c") category: String
+    ): MealsList
+}

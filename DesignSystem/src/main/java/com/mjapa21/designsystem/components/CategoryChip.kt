@@ -63,7 +63,7 @@ fun CategoryChip(
 
         Text(
             text = category,
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(8.dp),
             maxLines = 2,
