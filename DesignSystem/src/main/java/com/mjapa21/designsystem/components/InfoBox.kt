@@ -77,7 +77,7 @@ fun InfoBox(
                 )
                 if (!description.isNullOrBlank()) {
                     Text(
-                        modifier = Modifier.padding(8.dp),
+                        modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
                         text = description,
                         style = MaterialTheme.typography.bodySmall,
                         color = colorScheme.onPrimary.copy(alpha = 0.85f),
