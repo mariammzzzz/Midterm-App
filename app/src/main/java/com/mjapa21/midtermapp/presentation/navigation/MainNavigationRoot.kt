@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.mjapa21.midtermapp.CategoriesTestScreen
+import com.mjapa21.midtermapp.presentation.pages.home.HomeScreen
 
 @Composable
 fun MainNavigationRoot() {
@@ -12,7 +12,7 @@ fun MainNavigationRoot() {
     NavDisplay(backStack = backStack) { navKey ->
         when (navKey) {
             is Destinations.Home -> NavEntry(navKey) {
-                CategoriesTestScreen()//todo implement this
+                HomeScreen()
             }
 
             else -> throw IllegalStateException("Unknown destination: $navKey")
