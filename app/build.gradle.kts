@@ -59,6 +59,10 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 
 
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+
+
     // Retrofit for api calls
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
     implementation("com.squareup.retrofit2:converter-gson:3.0.0") //gson converter

@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.mjapa21.designsystem.components.CategoryChip
 import com.mjapa21.midtermapp.data.RetrofitInstance
 import com.mjapa21.midtermapp.data.model.CategoryListItem
+import com.mjapa21.midtermapp.presentation.navigation.MainNavigationRoot
 import com.mjapa21.theme.MidtermAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -35,7 +37,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             MidtermAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    CategoriesTestScreen(modifier = Modifier.padding(innerPadding))
+                    Box(modifier = Modifier.padding(innerPadding)) {
+                        MainNavigationRoot()
+                    }
                 }
             }
         }
