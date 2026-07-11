@@ -2,6 +2,7 @@ package com.mjapa21.midtermapp.data
 
 import com.mjapa21.midtermapp.data.model.CategoriesList
 import com.mjapa21.midtermapp.data.model.MealsList
+import com.mjapa21.midtermapp.data.model.RandomMealsList
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -14,4 +15,8 @@ interface FoodApi {
     suspend fun getFoodByCategory(
         @Query("c") category: String
     ): MealsList
+
+
+    @GET("random.php")
+    suspend fun getRandomMeal(): RandomMealsList
 }

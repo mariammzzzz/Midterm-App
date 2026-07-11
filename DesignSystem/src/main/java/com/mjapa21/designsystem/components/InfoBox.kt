@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -27,19 +28,18 @@ import coil3.request.crossfade
 
 @Composable
 fun InfoBox(
+    modifier: Modifier = Modifier,
     imageUrl: String?,
     title: String,
-    description: String,
-    modifier: Modifier = Modifier,
-    width: Dp = 250.dp,
+    description: String? = null,
+    width: Dp? = 250.dp,
     height: Dp = 400.dp,
 ) {
-
     val colorScheme = MaterialTheme.colorScheme
 
     Box(
         modifier = modifier
-            .width(width)
+            .then(if (width != null) Modifier.width(width) else Modifier.fillMaxWidth())
             .height(height)
             .clip(RoundedCornerShape(40.dp))
     ) {
@@ -62,7 +62,6 @@ fun InfoBox(
                 .padding(horizontal = 10.dp, vertical = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
@@ -70,14 +69,16 @@ fun InfoBox(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodySmall,
-                color = colorScheme.onSurface.copy(alpha = 0.85f),
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Center
-            )
+            if (!description.isNullOrBlank()) {
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = colorScheme.onSurface.copy(alpha = 0.85f),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }
