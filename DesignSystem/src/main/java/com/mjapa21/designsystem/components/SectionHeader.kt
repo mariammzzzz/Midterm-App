@@ -1,8 +1,6 @@
 package com.mjapa21.designsystem.components
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -26,7 +24,7 @@ import com.mjapa21.designsystem.R
 fun SectionHeader(
     modifier: Modifier = Modifier,
     title: String,
-    @DrawableRes iconRes: Int,
+    @DrawableRes iconRes: Int? = null,
     onClick: () -> Unit = {}
 ) {
 
@@ -35,10 +33,6 @@ fun SectionHeader(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape)
-            .border(
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
-                shape = shape
-            )
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clickable(onClick = onClick),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -50,12 +44,14 @@ fun SectionHeader(
             style = MaterialTheme.typography.titleLarge
         )
 
-        Icon(
-            modifier = Modifier.size(16.dp),
-            painter = painterResource(id = iconRes),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onBackground
-        )
+        iconRes?.let {
+            Icon(
+                modifier = Modifier.size(16.dp),
+                painter = painterResource(id = iconRes),
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onBackground
+            )
+        }
     }
 }
 
