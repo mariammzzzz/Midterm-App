@@ -59,8 +59,10 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
 
 
+    //navigation 3
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-navigation3:2.11.0")
 
 
     // Retrofit for api calls

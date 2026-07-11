@@ -13,6 +13,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,9 +38,17 @@ fun HomeScreen(
             getCategoriesUseCase = GetCategoriesUseCase(repository),
             getRandomMealUseCase = GetRandomMealUseCase(repository)
         )
-    }
+    },
+    onNavigateToMealDetails: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.navigateToMealDetailsEvent.collect { mealId ->
+            onNavigateToMealDetails(mealId ?: "")
+        }
+    }
+
 
     when (val state = uiState) {
         is HomeUiState.Loading -> {
@@ -57,14 +66,20 @@ fun HomeScreen(
         }
 
         is HomeUiState.Success -> {
-            HomeScreenContent(state = state, modifier = modifier)
+            HomeScreenContent(state = state, modifier = modifier, onMealClick = { mealId ->
+                viewModel.onMealClick(mealId)
+            })
         }
     }
 }
 
 
 @Composable
-private fun HomeScreenContent(state: HomeUiState.Success, modifier: Modifier = Modifier) {
+private fun HomeScreenContent(
+    modifier: Modifier = Modifier,
+    state: HomeUiState.Success,
+    onMealClick: (String) -> Unit
+) {
     val featuredMeal = state.data.randomMeals.firstOrNull()
     val moreMeals = state.data.randomMeals.drop(1)
 
@@ -87,7 +102,8 @@ private fun HomeScreenContent(state: HomeUiState.Success, modifier: Modifier = M
                     title = featuredMeal.strMeal ?: "",
                     width = null,
                     height = 200.dp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    onClick = { onMealClick(featuredMeal.idMeal) }
                 )
             }
         }
@@ -125,7 +141,7 @@ private fun HomeScreenContent(state: HomeUiState.Success, modifier: Modifier = M
         if (moreMeals.isNotEmpty()) {
             item {
                 Text(
-                    text = "More to try",
+                    text = "More to try from multiple countries",
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
                 )
@@ -137,7 +153,8 @@ private fun HomeScreenContent(state: HomeUiState.Success, modifier: Modifier = M
                     description = meal.strCountry?.let { "from $it" } ?: "Unknown",
                     width = null,
                     height = 250.dp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    onClick = { onMealClick(meal.idMeal) }
                 )
             }
         }
@@ -147,5 +164,5 @@ private fun HomeScreenContent(state: HomeUiState.Success, modifier: Modifier = M
 @Preview
 @Composable
 private fun HomeScreenPreview() {
-    HomeScreen()
+    HomeScreen(onNavigateToMealDetails = {})
 }

@@ -20,7 +20,7 @@ interface FoodApi {
     @GET("random.php")
     suspend fun getRandomMeal(): RandomMealsList
 
-    @GET
+    @GET("lookup.php")
     suspend fun getFoodById(
         @Query("i") id: String
     ): RandomMealsList
