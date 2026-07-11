@@ -28,10 +28,13 @@ class MealDetailsViewModel(
                     _uiState.value = MealDetailsUiState.Success(meal)
                 }
                 .onFailure {
-                    _uiState.value = MealDetailsUiState.Error(
-                        "Could not load this meal. Please check your connection and try again."
-                    )
+                    _uiState.value = MealDetailsUiState.Error(ERROR_MSG)
                 }
         }
+    }
+
+    companion object {
+        private const val ERROR_MSG =
+            "Could not load this meal. Please check your connection and try again."
     }
 }

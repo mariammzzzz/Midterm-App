@@ -54,9 +54,7 @@ class HomeScreenViewModel(
                     )
                 )
             } else {
-                _uiState.value = HomeUiState.Error(
-                    "Could not load data. Please make sure you are connected to the internet"
-                )
+                _uiState.value = HomeUiState.Error(ERROR_MSG)
             }
         }
     }
@@ -78,6 +76,8 @@ class HomeScreenViewModel(
     }
 
     private companion object {
-        const val RANDOM_MEAL_COUNT = 4
+        private const val RANDOM_MEAL_COUNT = 4
+        private const val ERROR_MSG =
+            "Could not load data. Please make sure you are connected to the internet"
     }
 }

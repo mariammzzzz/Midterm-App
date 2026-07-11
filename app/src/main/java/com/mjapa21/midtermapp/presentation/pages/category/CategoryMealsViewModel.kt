@@ -29,14 +29,14 @@ class CategoryMealsViewModel(
                     _uiState.value = CategoryMealsUiState.Success(topMeals)
                 }
                 .onFailure {
-                    _uiState.value = CategoryMealsUiState.Error(
-                        "Could not load meals for this category. Please check your connection and try again."
-                    )
+                    _uiState.value = CategoryMealsUiState.Error(ERROR_MSG)
                 }
         }
     }
 
     companion object {
         private const val MAX_MEALS = 10
+        private const val ERROR_MSG =
+            "Could not load meals for this category. Please check your connection and try again."
     }
 }
