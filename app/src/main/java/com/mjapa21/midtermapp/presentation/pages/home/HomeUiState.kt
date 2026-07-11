@@ -9,8 +9,7 @@ sealed interface HomeUiState {
     data class Error(val message: String) : HomeUiState
 }
 
-
 data class HomeScreenData(
     val categories: List<CategoryListItem>,
-    val randomMeal: RandomMealListItem
+    val randomMeals: List<RandomMealListItem>
 )

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mjapa21.midtermapp.domain.usecases.GetCategoriesUseCase
 import com.mjapa21.midtermapp.domain.usecases.GetRandomMealUseCase
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,16 +28,19 @@ class HomeScreenViewModel(
             _uiState.value = HomeUiState.Loading
 
             val categoriesDeferred = async { getCategoriesUseCase.invoke() }
-            val randomMealDeferred = async { getRandomMealUseCase.invoke() }
+            // 4 random meals fetched concurrently — first one is treated as "featured" by the UI
+            val mealDeferreds = List(RANDOM_MEAL_COUNT) { async { getRandomMealUseCase.invoke() } }
 
             val categoriesResult = categoriesDeferred.await()
-            val randomMealResult = randomMealDeferred.await()
+            val mealResults = mealDeferreds.awaitAll()
+            val randomMeals = mealResults.mapNotNull { it.getOrNull() }
 
-            if (categoriesResult.isSuccess && randomMealResult.isSuccess) {
+            // require categories + at least one meal to consider the screen loaded
+            if (categoriesResult.isSuccess && randomMeals.isNotEmpty()) {
                 _uiState.value = HomeUiState.Success(
                     HomeScreenData(
                         categories = categoriesResult.getOrThrow().categories,
-                        randomMeal = randomMealResult.getOrThrow()
+                        randomMeals = randomMeals
                     )
                 )
             } else {
@@ -49,5 +53,9 @@ class HomeScreenViewModel(
 
     fun onTryAgainClick() {
         loadHomeData()
+    }
+
+    private companion object {
+        const val RANDOM_MEAL_COUNT = 4
     }
 }
