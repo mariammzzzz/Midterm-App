@@ -42,7 +42,8 @@ fun MainNavigationRoot() {
             is Destinations.CategoryDetails -> NavEntry(navKey) {
                 CategoryMealsScreen(
                     category = navKey.category,
-                    onMealClick = { mealId -> backStack.add(Destinations.MealDetails(meadId = mealId)) }
+                    onMealClick = { mealId -> backStack.add(Destinations.MealDetails(meadId = mealId)) },
+                    onBackClick = { backStack.removeAt(backStack.lastIndex) }
                 )
             }
 

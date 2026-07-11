@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,11 +22,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mjapa21.designsystem.components.CategoryChip
 import com.mjapa21.designsystem.components.InfoBox
+import com.mjapa21.designsystem.components.SectionHeader
 import com.mjapa21.midtermapp.data.RetrofitInstance
 import com.mjapa21.midtermapp.data.repository.FoodRepository
 import com.mjapa21.midtermapp.domain.usecases.GetCategoriesUseCase
 import com.mjapa21.midtermapp.domain.usecases.GetRandomMealUseCase
 import com.mjapa21.midtermapp.presentation.pages.error.ErrorScreen
+import com.mjapa21.designsystem.R as DesignSyStemR
 
 @Composable
 fun HomeScreen(
@@ -100,9 +101,10 @@ private fun HomeScreenContent(
     ) {
         if (featuredMeal != null) {
             item {
-                Text(
-                    text = "Today's pick",
-                    style = MaterialTheme.typography.titleLarge,
+                SectionHeader(
+                    title = "Today's pick",
+                    iconRes = DesignSyStemR.drawable.ic_arrow_next,
+                    onClick = { onMealClick(featuredMeal.idMeal) },
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
@@ -119,9 +121,8 @@ private fun HomeScreenContent(
         }
 
         item {
-            Text(
-                text = "Categories",
-                style = MaterialTheme.typography.titleLarge,
+            SectionHeader(
+                title = "Categories",
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
@@ -150,9 +151,8 @@ private fun HomeScreenContent(
 
         if (moreMeals.isNotEmpty()) {
             item {
-                Text(
-                    text = "More to try from multiple countries",
-                    style = MaterialTheme.typography.titleLarge,
+                SectionHeader(
+                    title = "More to try from multiple countries",
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
                 )
             }

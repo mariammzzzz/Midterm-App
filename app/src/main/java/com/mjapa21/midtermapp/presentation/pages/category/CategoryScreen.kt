@@ -7,23 +7,32 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mjapa21.designsystem.components.InfoBox
-import com.mjapa21.designsystem.components.SectionHeader
 import com.mjapa21.midtermapp.data.RetrofitInstance
 import com.mjapa21.midtermapp.data.repository.FoodRepository
 import com.mjapa21.midtermapp.domain.usecases.GetFoodByCategoryUseCase
 import com.mjapa21.midtermapp.presentation.pages.error.ErrorScreen
+import com.mjapa21.designsystem.R as DesignSystemR
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryMealsScreen(
     modifier: Modifier = Modifier,
@@ -35,39 +44,65 @@ fun CategoryMealsScreen(
             getFoodByCategoryUseCase = GetFoodByCategoryUseCase(repository),
             category = category
         )
-    }
+    },
+    onBackClick: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    when (val state = uiState) {
-        is CategoryMealsUiState.Loading -> {
-            Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text(category) },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(
+                            painter = painterResource(DesignSystemR.drawable.ic_arrow_back),
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground
+                )
+            )
+        }
+    ) { innerPadding ->
+        when (val state = uiState) {
+            is CategoryMealsUiState.Loading -> {
+                Box(
+                    modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
             }
-        }
 
-        is CategoryMealsUiState.Error -> {
-            ErrorScreen(
-                errorMsg = state.message,
-                onTryAgainClick = { viewModel.loadMeals() },
-                modifier = modifier
-            )
-        }
+            is CategoryMealsUiState.Error -> {
+                ErrorScreen(
+                    errorMsg = state.message,
+                    onTryAgainClick = { viewModel.loadMeals() },
+                    modifier = modifier.padding(innerPadding),
+                )
+            }
 
-        is CategoryMealsUiState.Success -> {
-            CategoryMealsContent(
-                category = category,
-                meals = state.meals,
-                onMealClick = onMealClick,
-                modifier = modifier
-            )
+            is CategoryMealsUiState.Success -> {
+                CategoryMealsContent(
+                    meals = state.meals,
+                    onMealClick = onMealClick,
+                    modifier = modifier.padding(innerPadding),
+                )
+            }
         }
     }
 }
 
 @Composable
 private fun CategoryMealsContent(
-    category: String,
     meals: List<com.mjapa21.midtermapp.data.model.MealListItem>,
     onMealClick: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -77,13 +112,6 @@ private fun CategoryMealsContent(
         contentPadding = PaddingValues(vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        item {
-            SectionHeader(
-                title = category,
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
-        }
-
         if (meals.isEmpty()) {
             item {
                 Text(
@@ -110,5 +138,5 @@ private fun CategoryMealsContent(
 @Preview
 @Composable
 private fun CategoryMealsScreenPreview() {
-    CategoryMealsScreen(category = "Beef", onMealClick = {})
+    CategoryMealsScreen(category = "Beef", onMealClick = {}, onBackClick = {})
 }
