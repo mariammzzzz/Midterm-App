@@ -25,6 +25,10 @@ class HomeScreenViewModel(
     private val _navigateToMealDetailsEvent = MutableSharedFlow<String?>()
     val navigateToMealDetailsEvent: SharedFlow<String?> = _navigateToMealDetailsEvent.asSharedFlow()
 
+
+    private val _navigateToCategoryEvent = MutableSharedFlow<String?>()
+    val navigateToCategoryEvent: SharedFlow<String?> = _navigateToCategoryEvent.asSharedFlow()
+
     init {
         loadHomeData()
     }
@@ -64,6 +68,12 @@ class HomeScreenViewModel(
     fun onMealClick(mealId: String) {
         viewModelScope.launch {
             _navigateToMealDetailsEvent.emit(mealId)
+        }
+    }
+
+    fun onCategoryClick(category: String) {
+        viewModelScope.launch {
+            _navigateToCategoryEvent.emit(category)
         }
     }
 

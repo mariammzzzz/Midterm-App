@@ -39,7 +39,8 @@ fun HomeScreen(
             getRandomMealUseCase = GetRandomMealUseCase(repository)
         )
     },
-    onNavigateToMealDetails: (String) -> Unit
+    onNavigateToMealDetails: (String) -> Unit,
+    onNavigateToCategory: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -48,6 +49,14 @@ fun HomeScreen(
             onNavigateToMealDetails(mealId ?: "")
         }
     }
+
+    LaunchedEffect(Unit) {
+        viewModel.navigateToCategoryEvent.collect { categoryId ->
+            onNavigateToCategory(categoryId ?: "")
+        }
+    }
+
+
 
 
     when (val state = uiState) {
@@ -68,7 +77,7 @@ fun HomeScreen(
         is HomeUiState.Success -> {
             HomeScreenContent(state = state, modifier = modifier, onMealClick = { mealId ->
                 viewModel.onMealClick(mealId)
-            })
+            }, onCategoryClick = { category -> viewModel.onCategoryClick(category) })
         }
     }
 }
@@ -78,7 +87,8 @@ fun HomeScreen(
 private fun HomeScreenContent(
     modifier: Modifier = Modifier,
     state: HomeUiState.Success,
-    onMealClick: (String) -> Unit
+    onMealClick: (String) -> Unit,
+    onCategoryClick: (String) -> Unit
 ) {
     val featuredMeal = state.data.randomMeals.firstOrNull()
     val moreMeals = state.data.randomMeals.drop(1)
@@ -131,7 +141,7 @@ private fun HomeScreenContent(
                         CategoryChip(
                             category = category.strCategory,
                             imageUrl = category.strCategoryThumb,
-                            onClick = { /* navigate or select */ }
+                            onClick = { onCategoryClick(category.strCategory) }
                         )
                     }
                 }
@@ -164,5 +174,5 @@ private fun HomeScreenContent(
 @Preview
 @Composable
 private fun HomeScreenPreview() {
-    HomeScreen(onNavigateToMealDetails = {})
+    HomeScreen(onNavigateToMealDetails = {}, onNavigateToCategory = {})
 }

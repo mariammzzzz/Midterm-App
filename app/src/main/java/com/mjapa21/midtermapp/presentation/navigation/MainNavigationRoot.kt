@@ -5,6 +5,7 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.mjapa21.midtermapp.presentation.pages.category.CategoryMealsScreen
 import com.mjapa21.midtermapp.presentation.pages.details.MealDetailsScreen
 import com.mjapa21.midtermapp.presentation.pages.home.HomeScreen
 
@@ -22,15 +23,27 @@ fun MainNavigationRoot() {
     ) { navKey ->
         when (navKey) {
             is Destinations.Home -> NavEntry(navKey) {
-                HomeScreen(onNavigateToMealDetails = { mealId ->
-                    backStack.add(Destinations.MealDetails(meadId = mealId))
-                })
+                HomeScreen(
+                    onNavigateToMealDetails = { mealId ->
+                        backStack.add(Destinations.MealDetails(meadId = mealId))
+                    },
+                    onNavigateToCategory = { category ->
+                        backStack.add(Destinations.CategoryDetails(category))
+                    }
+                )
             }
 
             is Destinations.MealDetails -> NavEntry(navKey) {
                 MealDetailsScreen(
                     mealId = navKey.meadId,
                     onBackClick = { backStack.removeAt(backStack.lastIndex) })
+            }
+
+            is Destinations.CategoryDetails -> NavEntry(navKey) {
+                CategoryMealsScreen(
+                    category = navKey.category,
+                    onMealClick = { mealId -> backStack.add(Destinations.MealDetails(meadId = mealId)) }
+                )
             }
 
             else -> throw IllegalStateException("Unknown destination: $navKey")

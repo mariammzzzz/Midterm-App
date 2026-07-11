@@ -10,9 +10,9 @@ sealed interface Destinations : NavKey {
     data object Home : Destinations
 
     @Serializable
-    data class CategoryDetails(val categoryId: String) : Destinations //todo check this later
+    data class CategoryDetails(val category: String) : Destinations
 
 
     @Serializable
-    data class MealDetails(val meadId: String) : Destinations //todo check this later
+    data class MealDetails(val meadId: String) : Destinations
 }
