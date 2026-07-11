@@ -59,8 +59,7 @@ fun InfoBox(
                 .padding(12.dp)
                 .clip(RoundedCornerShape(32.dp))
                 .background(colorScheme.surface.copy(alpha = 0.8f))
-                .padding(horizontal = 10.dp, vertical = 10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(horizontal = 10.dp, vertical = 10.dp)
         ) {
             Text(
                 text = title,
@@ -76,7 +75,7 @@ fun InfoBox(
                     color = colorScheme.onSurface.copy(alpha = 0.85f),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Left
                 )
             }
         }

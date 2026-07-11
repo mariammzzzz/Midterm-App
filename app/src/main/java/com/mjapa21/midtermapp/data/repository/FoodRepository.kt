@@ -33,4 +33,13 @@ class FoodRepository(private val foodApi: FoodApi) {
             Result.failure(e)
         }
     }
+
+    suspend fun getFoodById(id: String): Result<RandomMealsList> {
+        return try {
+            val response = foodApi.getFoodById(id)
+            Result.success(response)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

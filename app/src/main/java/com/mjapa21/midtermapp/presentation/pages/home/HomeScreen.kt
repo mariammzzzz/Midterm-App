@@ -108,7 +108,7 @@ private fun HomeScreenContent(state: HomeUiState.Success, modifier: Modifier = M
             } else {
                 LazyRow(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
                     items(state.data.categories) { category ->
@@ -134,8 +134,9 @@ private fun HomeScreenContent(state: HomeUiState.Success, modifier: Modifier = M
                 InfoBox(
                     imageUrl = meal.strMealThumb,
                     title = meal.strMeal ?: "",
+                    description = meal.strCountry?.let { "from $it" } ?: "Unknown",
                     width = null,
-                    height = 160.dp,
+                    height = 250.dp,
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
