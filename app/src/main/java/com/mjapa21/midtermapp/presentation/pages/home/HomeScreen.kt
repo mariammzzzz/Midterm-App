@@ -1,17 +1,21 @@
 package com.mjapa21.midtermapp.presentation.pages.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -30,6 +34,40 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    when (val state = uiState) {
+        is HomeUiState.Loading -> {
+            Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+
+        is HomeUiState.Error -> {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(32.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = state.message,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                Button(onClick = { viewModel.onTryAgainClick() }) {
+                    Text("Try Again")
+                }
+            }
+        }
+
+        is HomeUiState.Success -> {
+            HomeScreenContent(state = state, modifier = modifier)
+        }
+    }
+}
+
+@Composable
+private fun HomeScreenContent(state: HomeUiState.Success, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -41,30 +79,19 @@ fun HomeScreen(
             style = MaterialTheme.typography.titleLarge
         )
 
-        when (val state = uiState) {
-            is HomeUiState.Loading -> CircularProgressIndicator()
-
-            is HomeUiState.Error -> Text(
-                text = "Error: ${state.message}",
-                color = MaterialTheme.colorScheme.error
-            )
-
-            is HomeUiState.Success -> {
-                if (state.categories.isEmpty()) {
-                    Text("No categories returned.")
-                } else {
-                    Text("Loaded ${state.categories.size} categories")
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        items(state.categories) { category ->
-                            CategoryChip(
-                                category = category.strCategory,
-                                imageUrl = category.strCategoryThumb,
-                                onClick = { /* navigate or select */ }
-                            )
-                        }
-                    }
+        if (state.categories.isEmpty()) {
+            Text("No categories returned.")
+        } else {
+            Text("Loaded ${state.categories.size} categories")
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(state.categories) { category ->
+                    CategoryChip(
+                        category = category.strCategory,
+                        imageUrl = category.strCategoryThumb,
+                        onClick = { /* navigate or select */ }
+                    )
                 }
             }
         }

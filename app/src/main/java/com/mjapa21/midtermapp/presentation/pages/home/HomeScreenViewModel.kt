@@ -27,9 +27,14 @@ class HomeScreenViewModel(
                 .onSuccess { result ->
                     _uiState.value = HomeUiState.Success(result.categories)
                 }
-                .onFailure { error ->
-                    _uiState.value = HomeUiState.Error(error.message ?: "Unknown error")
+                .onFailure { _ ->
+                    _uiState.value =
+                        HomeUiState.Error("Could not load data. Please make sure you are connected to the internet")
                 }
         }
+    }
+
+    fun onTryAgainClick() {
+        loadCategories()
     }
 }
